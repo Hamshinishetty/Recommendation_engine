@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Movie Recommendations</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #121212; /* Dark background */
+            color: #fff !important;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(to right, #141e30, #243b55); /* Gradient background */
+            padding: 15px;
+            border-bottom: 2px solid #00bfff; /* Light blue border */
+        }
+
+        .navbar-brand {
+            color: #00bfff !important; /* Light blue color */
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #00bfff; /* Light blue color */
+        }
+
+        .navbar-nav {
+            margin-left: auto;
+        }
+
+        .nav-item {
+            margin-right: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff !important; /* White color */
+            font-size: 1.2rem;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .nav-link:hover {
+            color: #00bfff !important; /* Light blue color on hover */
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 20px;
+            margin-top: 60px; /* Adjust the margin-top value as needed */
+        }
+
+        h1 {
+            color: #00bfff !important; /* Light blue color */
+        }
+
+        h2 {
+            color: #87cefa; /* Light blue color */
+        }
+
+        .scrollable-container {
+            overflow-x: scroll; /* Allow horizontal scrolling */
+            white-space: nowrap;
+            max-width: 100%; /* Limit the width to the screen width */
+            scrollbar-width: none; /* Hide the scrollbar on Firefox */
+            -ms-overflow-style: none; /* Hide the scrollbar on Internet Explorer/Edge */
+        }
+
+        .scrollable-container::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .movie-card {
+            display: inline-block;
+            margin: 10px; /* Add some margin around the movie cards */
+            width: 220px; /* Increase the width of the movie card */
+            height: 320px; /* Increase the height of the movie card */
+            overflow: hidden;
+            text-align: center; /* Center-align the content within the card */
+            transition: transform 0.3s ease-in-out; /* Add smooth transition effect */
+        }
+        .movie-card img {
+            max-width: 100%; /* Make sure the image doesn't exceed the card's width */
+            max-height: 70%; /* Set a maximum height for the movie card image */
+            object-fit: contain; /* Ensure the image is contained within the available space */
+        }
+
+        .movie-card:hover {
+            transform: scale(1.1); /* Apply a scale transformation on hover */
+        }
+
+        .jumbotron {
+            background-color: #121212; /* Dark background */
+            color: #fff; /* White text */
+            padding: 20px;
+            margin-top: 30px; /* Increased margin from the top */
+        }
+
+        .jumbotron img {
+            max-width: 100%; /* Make sure the image doesn't exceed the jumbotron's width */
+            max-height: 70%; /* Set a maximum height for the jumbotron image */
+            object-fit: cover; /* Ensure the image covers the available space */
+        }
+
+        .separator {
+            border-top: 2px solid #00bfff; /* Thick light blue line */
+            margin: 40px 0; /* Add spacing above and below the line */
+        }
+
+        .word {
+            color: #fff;
+            font-size: 18px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: normal; /* Allow the title to wrap to the next line */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Add ellipsis (...) for long titles */
+            margin-top: 10px; /* Add top margin to the title */
+        }
+
+        /* Center the Go Back button */
+        .btn-center {
+            display: block;
+            margin: auto;
+            margin-top: 20px; /* Add margin for spacing */
+            background-color: #121212; /* Dark background */
+            border-color: #00bfff !important; /* Light blue border color */
+            width: 100px; /* Set the width of the button */
+        }
+
+        /* Style for the Go Back button */
+        .btn-tertiary-bg-rgb {
+            color: #00bfff !important; /* Light blue color */
+            background-color: #121212 !important; /* Dark background color */
+            border-color: #00bfff !important; /* Light blue border color */
+        }
+
+        /* Style for the footer text */
+        .text-dark {
+            color: #000 !important; /* Black color */
+        }
+
+        /* Style for the footer text within the page-footer */
+        .footer-copyright {
+            color: #fff !important; /* White color */
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <a class="navbar-brand" href="#">MOVIE RECOMMENDER</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+            aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="basicExampleNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="mt-5"></div>
+        <h1 class="display-1 mt-5 font-weight-bold text-center">Movie Recommendations</h1>
+        <h2 class="text-center">For movie: {{ movie_name }}</h2>
+    </div>
+    <div class="scrollable-container">
+        {% for recommendation in recommendations.iterrows() %}
+            <div class="movie-card">
+                <img src="{{ get_movie_poster(recommendation.1['Title']) }}" alt="Movie Poster">
+                <div class="word">{{ recommendation.1['Title'] }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="/" class="btn btn-tertiary-bg-rgb btn-center">Go Back</a>
+    <div class="separator"></div>
+    <footer class="text-center font-small black pt-4">
+        <!-- Copyright -->
+        <div class="footer-copyright black text-center py-3 text-dark">© 2023 Copyright:
+            <a href="/">MovieRecommender.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+</body>
+
+</html>
