@@ -1,7 +1,7 @@
 
 # 🎬 Movie Recommendation Engine 🍿
 
-This is a movie recommendation engine project developed by [Prateek](https://github.com/prateekmlg-1907).
+This is a movie recommendation engine project.
 
 
 ## Overview 🌟
